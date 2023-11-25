@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Header } from '../components/Header';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { url } from '../const';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Header } from '../components/Header';
+import { url } from '../const';
 import './editTask.scss';
 
 // EditTask コンポーネント
@@ -18,14 +18,34 @@ export const EditTask = () => {
   // Stateの初期化
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
-  const [isDone, setIsDone] = useState();
+  const [isDone, setIsDone] = useState(false);
+  const [deadline, setDeadline] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   // イベントハンドラーの定義
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
   const handleIsDoneChange = (e) => setIsDone(e.target.value === 'done');
+  const handleDeadlineChange = (e) => setDeadline(e.target.value);
 
+  const RemainingTime = () => {
+    if (!deadline) {
+      return '';
+    }
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const differenceInMilliseconds = deadlineDate - now;
+
+    const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
+    const minutes = Math.floor(
+      (differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60),
+    );
+
+    return `${days}日 ${hours}時間 ${minutes}分`;
+  };
   // タスクの更新処理
   const onUpdateTask = () => {
     console.log(isDone);
@@ -33,6 +53,7 @@ export const EditTask = () => {
       title: title,
       detail: detail,
       done: isDone,
+      deadline: deadline,
     };
 
     axios
@@ -79,11 +100,12 @@ export const EditTask = () => {
         setTitle(task.title);
         setDetail(task.detail);
         setIsDone(task.done);
+        setDeadline(task.deadline || ''); // 期限がない場合は空文字を設定
       })
       .catch((err) => {
         setErrorMessage(`タスク情報の取得に失敗しました。${err}`);
-      }); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      });
+  }, [listId, taskId, cookies.token]);
 
   // JSXを返す
   return (
@@ -101,8 +123,6 @@ export const EditTask = () => {
           {/* タイトルの入力欄 */}
           <input
             type="text"
-            id="textid"
-            name="text"
             onChange={handleTitleChange}
             className="edit-task-title"
             value={title}
@@ -113,11 +133,17 @@ export const EditTask = () => {
           {/* 詳細の入力欄 */}
           <textarea
             type="text"
-            id="textid"
-            name="text"
             onChange={handleDetailChange}
             className="edit-task-detail"
             value={detail}
+          />
+          <br />
+          <label>期限</label>
+          <br />
+          <input
+            type="datetime-local"
+            onChange={handleDeadlineChange}
+            value={deadline}
           />
           <br />
           <div>
@@ -141,6 +167,12 @@ export const EditTask = () => {
             />
             完了
           </div>
+          {/* 期限日時と残り日時の表示 */}
+          <>
+            <p>期限：{deadline}</p>
+            <p>残り日時：{RemainingTime()}</p>
+          </>
+          <br />
           {/* タスク削除ボタン */}
           <button
             type="button"

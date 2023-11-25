@@ -23,9 +23,7 @@ export const NewTask = () => {
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
   const handleSelectList = (id) => setSelectListId(id);
-  const handleDeadlineChange = (e) => {
-    setDeadline(e.target.value);
-  };
+  const handleDeadlineChange = (e) => setDeadline(e.target.value);
 
   // タスク作成処理
   const onCreateTask = () => {
@@ -64,8 +62,28 @@ export const NewTask = () => {
       })
       .catch((err) => {
         setErrorMessage(`リストの取得に失敗しました。${err}`);
-      }); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      });
+  }, [cookies.token]);
+
+  //期限日時と残りの日時の表示
+  const calculateRemainingTime = () => {
+    if (!deadline) {
+      return '';
+    }
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const differenceInMilliseconds = deadlineDate - now;
+
+    const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
+    const minutes = Math.floor(
+      (differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60),
+    );
+
+    return `${days}日 ${hours}時間 ${minutes}分`;
+  };
 
   // JSXを返す
   return (
@@ -94,7 +112,8 @@ export const NewTask = () => {
           <label htmlFor="title">タイトル</label>
           <br />
           <input
-            type="text"
+            type="tt"
+            id="id"
             onChange={handleTitleChange}
             className="new-task-title"
           />
@@ -102,8 +121,6 @@ export const NewTask = () => {
 
           {/* 詳細の入力 */}
           <label>詳細</label>
-          <p>期限：{deadline}</p>
-
           <br />
           <textarea
             type="text"
@@ -122,7 +139,9 @@ export const NewTask = () => {
             onChange={handleDeadlineChange}
           />
 
-          {/* 期限日時と残り日時の表示 *編集中/}
+          {/* 期限日時と残り日時の表示 */}
+          <p>期限:{deadline}</p>
+          <p>残り日時:{calculateRemainingTime()}</p>
 
           {/* タスク作成ボタン */}
           <button
