@@ -199,7 +199,7 @@ const Tasks = (props) => {
               <br />
               {`期限: ${task.deadline}`}
               <br />
-              {`残り日時: ${task.remainingTime}`}
+              {`残り日時: ${task.RemainingTime}`}
             </Link>
           </li>
         ))}
