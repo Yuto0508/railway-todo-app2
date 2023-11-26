@@ -1,4 +1,15 @@
+@mixin tab {
+  max-width: 768px;
+  // タブレット用のスタイル
+}
+
+@mixin se {
+  max-width: 320px;
+  // スマホ用のスタイル
+}
 .taskList {
+  @include se;
+  @include tab;
   margin: 50px auto;
   list-style: none;
   width: 1000px;

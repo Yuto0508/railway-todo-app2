@@ -34,8 +34,7 @@ export const Home = () => {
       .catch((err) => {
         setErrorMessage(`リストの取得に失敗しました。${err}`);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cookies.token]);
 
   // 選択中のリストが変更された時の処理
   useEffect(() => {
@@ -55,8 +54,7 @@ export const Home = () => {
           setErrorMessage(`タスクの取得に失敗しました。${err}`);
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lists]);
+  }, [lists, cookies.token]);
 
   // 選択中のリストが変更された時の処理
   const handleSelectList = (id) => {
@@ -74,6 +72,7 @@ export const Home = () => {
         setErrorMessage(`タスクの取得に失敗しました。${err}`);
       });
   };
+
   // JSXを返す
   return (
     <div>
