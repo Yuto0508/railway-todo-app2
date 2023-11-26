@@ -14,7 +14,7 @@ export const NewTask = () => {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   // 期限
-  const [deadline, setDeadline] = useState(null); // 期限日時の初期値はnullとしておく
+  const [deadline, setDeadline] = useState(''); // 期限日時の初期値は空文字列
   const [errorMessage, setErrorMessage] = useState('');
   const [cookies] = useCookies();
   const history = useNavigate();
