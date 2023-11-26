@@ -151,6 +151,7 @@ export const Home = () => {
 };
 
 // 表示するタスク
+// Tasks コンポーネント内のリスト表示部分の修正
 const Tasks = (props) => {
   const { tasks, selectListId, isDoneDisplay } = props;
   if (tasks === null) return <></>;
@@ -160,9 +161,7 @@ const Tasks = (props) => {
     return (
       <ul>
         {tasks
-          .filter((task) => {
-            return task.done === true;
-          })
+          .filter((task) => task.done === true)
           .map((task, key) => (
             <li key={key} className="task-item">
               <Link
@@ -172,6 +171,10 @@ const Tasks = (props) => {
                 {task.title}
                 <br />
                 {task.done ? '完了' : '未完了'}
+                <br />
+                {`期限: ${task.deadline}`}
+                <br />
+                {`残り日時: ${task.remainingTime}`}
               </Link>
             </li>
           ))}
@@ -179,12 +182,11 @@ const Tasks = (props) => {
     );
   }
 
+  // 未完了タスクの表示
   return (
     <ul>
       {tasks
-        .filter((task) => {
-          return task.done === false;
-        })
+        .filter((task) => task.done === false)
         .map((task, key) => (
           <li key={key} className="task-item">
             <Link
@@ -194,6 +196,10 @@ const Tasks = (props) => {
               {task.title}
               <br />
               {task.done ? '完了' : '未完了'}
+              <br />
+              {`期限: ${task.deadline}`}
+              <br />
+              {`残り日時: ${task.remainingTime}`}
             </Link>
           </li>
         ))}

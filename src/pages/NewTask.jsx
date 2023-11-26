@@ -14,7 +14,7 @@ export const NewTask = () => {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   // 期限
-  const [deadline, setDeadline] = useState('');
+  const [deadline, setDeadline] = useState(null); // 期限日時の初期値はnullとしておく
   const [errorMessage, setErrorMessage] = useState('');
   const [cookies] = useCookies();
   const history = useNavigate();
@@ -66,7 +66,7 @@ export const NewTask = () => {
   }, [cookies.token]);
 
   //期限日時と残りの日時の表示
-  const calculateRemainingTime = () => {
+  const RemainingTime = () => {
     if (!deadline) {
       return '';
     }
@@ -141,7 +141,7 @@ export const NewTask = () => {
 
           {/* 期限日時と残り日時の表示 */}
           <p>期限:{deadline}</p>
-          <p>残り日時:{calculateRemainingTime()}</p>
+          <p>残り日時:{RemainingTime()}</p>
 
           {/* タスク作成ボタン */}
           <button
