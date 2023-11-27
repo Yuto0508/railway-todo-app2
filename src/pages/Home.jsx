@@ -109,7 +109,7 @@ export const Home = () => {
                   onClick={() => handleSelectList(list.id)}
                   role="tab"
                   aria-selected={isActive}
-                  tabIndex={110}
+                  tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleSelectList(list.id);

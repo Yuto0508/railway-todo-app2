@@ -142,11 +142,7 @@ export const EditTask = () => {
           <br />
           <label>期限</label>
           <br />
-          <input
-            type="datetime-local"
-            onChange={handleDeadlineChange}
-            value={limit}
-          />
+          <input type="datetime-local" onChange={handleDeadlineChange} />
           <br />
           <div>
             {/* タスクの状態ラジオボタン */}
