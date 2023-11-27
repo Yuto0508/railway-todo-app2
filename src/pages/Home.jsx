@@ -49,6 +49,7 @@ export const Home = () => {
         })
         .then((res) => {
           setTasks(res.data.tasks);
+          console.log(res.data.tasks);
         })
         .catch((err) => {
           setErrorMessage(`タスクの取得に失敗しました。${err}`);
@@ -67,6 +68,7 @@ export const Home = () => {
       })
       .then((res) => {
         setTasks(res.data.tasks);
+        console.log(res.data.tasks);
       })
       .catch((err) => {
         setErrorMessage(`タスクの取得に失敗しました。${err}`);
@@ -107,7 +109,7 @@ export const Home = () => {
                   onClick={() => handleSelectList(list.id)}
                   role="tab"
                   aria-selected={isActive}
-                  tabIndex={0}
+                  tabIndex={110}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleSelectList(list.id);
@@ -151,10 +153,28 @@ export const Home = () => {
 };
 
 // 表示するタスク
-// Tasks コンポーネント内のリスト表示部分の修正
 const Tasks = (props) => {
   const { tasks, selectListId, isDoneDisplay } = props;
   if (tasks === null) return <></>;
+  const RemainingTime = (limit) => {
+    console.log(limit);
+    if (!limit) {
+      return '';
+    }
+    const now = new Date();
+    const deadlineDate = new Date(limit);
+    const differenceInMilliseconds = deadlineDate - now;
+
+    const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
+    const minutes = Math.floor(
+      (differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60),
+    );
+
+    return `${days}日 ${hours}時間 ${minutes}分`;
+  };
 
   // 完了済みタスクの表示
   if (isDoneDisplay === 'done') {
@@ -172,9 +192,9 @@ const Tasks = (props) => {
                 <br />
                 {task.done ? '完了' : '未完了'}
                 <br />
-                {`期限: ${task.deadline}`}
+                {`期限: ${task.limit}`}
                 <br />
-                {`残り日時: ${task.remainingTime}`}
+                {`残り日時: ${RemainingTime(task.limit)}`}
               </Link>
             </li>
           ))}
@@ -197,9 +217,9 @@ const Tasks = (props) => {
               <br />
               {task.done ? '完了' : '未完了'}
               <br />
-              {`期限: ${task.deadline}`}
+              {`期限: ${task.limit}`}
               <br />
-              {`残り日時: ${task.remainingTime}`}
+              {`残り日時: ${RemainingTime(task.limit)}`}
             </Link>
           </li>
         ))}
@@ -212,4 +232,5 @@ Tasks.propTypes = {
   tasks: PropTypes.array,
   selectListId: PropTypes.string,
   isDoneDisplay: PropTypes.string,
+  RemainingTime: PropTypes.string,
 };

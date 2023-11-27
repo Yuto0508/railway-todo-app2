@@ -15,8 +15,8 @@ export const Header = () => {
   const navigate = useNavigate();
 
   // Cookieフックを使用してクッキーの取得と削除
-  const [cookies, setCookie, removeCookie] = useCookies();
-  console.log(cookies, setCookie);
+  const [_, setCookie, removeCookie] = useCookies();// eslint-disable-line
+
 
   // サインアウト処理
   const handleSignOut = () => {

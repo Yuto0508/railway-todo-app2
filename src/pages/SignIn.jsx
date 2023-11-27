@@ -19,8 +19,7 @@ export const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState();
-  const [cookies, setCookie, removeCookie] = useCookies();
-  console.log(cookies, removeCookie);
+  const [_, setCookie] = useCookies();// eslint-disable-line
 
   // イベントハンドラーの定義
   const handleEmailChange = (e) => setEmail(e.target.value);

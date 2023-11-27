@@ -14,7 +14,7 @@ export const NewTask = () => {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   // 期限
-  const [deadline, setDeadline] = useState(''); // 期限日時の初期値は空文字列
+  const [limit, setLimit] = useState(''); // 期限日時の初期値は空文字列
   const [errorMessage, setErrorMessage] = useState('');
   const [cookies] = useCookies();
   const history = useNavigate();
@@ -23,15 +23,18 @@ export const NewTask = () => {
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
   const handleSelectList = (id) => setSelectListId(id);
-  const handleDeadlineChange = (e) => setDeadline(e.target.value);
+  const handleDeadlineChange = (e) => {
+    const limitDate = new Date(e.target.value);
+    setLimit(limitDate.toISOString().split('.000Z')[0] + 'Z');
+  };
 
-  // タスク作成処理
+  // タスク作成処理(deadlineをAPIを受け取れるよう正しい形にする)
   const onCreateTask = () => {
     const data = {
       title: title,
       detail: detail,
       done: false,
-      deadline: deadline,
+      limit: limit,
     };
 
     axios
@@ -65,13 +68,13 @@ export const NewTask = () => {
       });
   }, [cookies.token]);
 
-  //期限日時と残りの日時の表示
+  //期限日時と残りの日時の表示→Homeコンポーネントで表示する。Homeに持っていく。
   const RemainingTime = () => {
-    if (!deadline) {
+    if (!limit) {
       return '';
     }
     const now = new Date();
-    const deadlineDate = new Date(deadline);
+    const deadlineDate = new Date(limit);
     const differenceInMilliseconds = deadlineDate - now;
 
     const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
@@ -112,8 +115,8 @@ export const NewTask = () => {
           <label htmlFor="title">タイトル</label>
           <br />
           <input
-            type="tt"
-            id="id"
+            type="text"
+            id="title"
             onChange={handleTitleChange}
             className="new-task-title"
           />
@@ -131,16 +134,16 @@ export const NewTask = () => {
           />
           <br />
 
-          <label htmlFor="deadline">期限：</label>
+          <label htmlFor="limit">期限：</label>
           <input
             type="datetime-local"
-            id="deadline"
-            name="deadline"
+            id="limit"
+            name="limit"
             onChange={handleDeadlineChange}
           />
 
           {/* 期限日時と残り日時の表示 */}
-          <p>期限:{deadline}</p>
+          <p>期限:{limit}</p>
           <p>残り日時:{RemainingTime()}</p>
 
           {/* タスク作成ボタン */}

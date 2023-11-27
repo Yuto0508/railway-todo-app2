@@ -19,21 +19,25 @@ export const EditTask = () => {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   const [isDone, setIsDone] = useState(false);
-  const [deadline, setDeadline] = useState('');
+  const [limit, setLimit] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   // イベントハンドラーの定義
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
   const handleIsDoneChange = (e) => setIsDone(e.target.value === 'done');
-  const handleDeadlineChange = (e) => setDeadline(e.target.value);
+  const handleDeadlineChange = (e) => {
+    const limitDate = new Date(e.target.value);
+    setLimit(limitDate.toISOString().split('.000Z')[0] + 'Z');
+  };
 
+  // RemainingTime関数
   const RemainingTime = () => {
-    if (!deadline) {
+    if (!limit) {
       return '';
     }
     const now = new Date();
-    const deadlineDate = new Date(deadline);
+    const deadlineDate = new Date(limit);
     const differenceInMilliseconds = deadlineDate - now;
 
     const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
@@ -46,14 +50,13 @@ export const EditTask = () => {
 
     return `${days}日 ${hours}時間 ${minutes}分`;
   };
-  // タスクの更新処理
+  // タスクの更新処理(deadlineをAPIを受け取る正しい形にする)
   const onUpdateTask = () => {
-    console.log(isDone);
     const data = {
       title: title,
       detail: detail,
       done: isDone,
-      deadline: deadline,
+      limit: limit,
     };
 
     axios
@@ -62,8 +65,7 @@ export const EditTask = () => {
           authorization: `Bearer ${cookies.token}`,
         },
       })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         navigate('/');
       })
       .catch((err) => {
@@ -100,7 +102,7 @@ export const EditTask = () => {
         setTitle(task.title);
         setDetail(task.detail);
         setIsDone(task.done);
-        setDeadline(task.deadline || ''); // 期限がない場合は空文字を設定
+        setLimit(task.limit || ''); // 期限がない場合は空文字を設定
       })
       .catch((err) => {
         setErrorMessage(`タスク情報の取得に失敗しました。${err}`);
@@ -143,7 +145,7 @@ export const EditTask = () => {
           <input
             type="datetime-local"
             onChange={handleDeadlineChange}
-            value={deadline}
+            value={limit}
           />
           <br />
           <div>
@@ -169,7 +171,7 @@ export const EditTask = () => {
           </div>
           {/* 期限日時と残り日時の表示 */}
           <>
-            <p>期限：{deadline}</p>
+            <p>期限：{limit}</p>
             <p>残り日時：{RemainingTime()}</p>
           </>
           <br />
