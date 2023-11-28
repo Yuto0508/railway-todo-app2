@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useNavigate, Link } from 'react-router-dom';
@@ -19,7 +19,7 @@ export const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState();
-  const [_, setCookie] = useCookies();// eslint-disable-line
+  const [_, setCookie] = useCookies(); // eslint-disable-line
 
   // イベントハンドラーの定義
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -41,11 +41,20 @@ export const SignIn = () => {
       });
   };
 
-  //認証済みの場合はホームページにリダイレクト
-  if (auth) {
-    navigate('/', { replace: true });
-    return; // または適当なコンポーネントを返す
-  }
+  useEffect(() => {
+    //認証済みの場合はホームページにリダイレクト
+    if (auth) {
+      navigate('/', { replace: true });
+      return; // または適当なコンポーネントを返す
+    }
+
+    navigate('/signin', { replace: true });
+
+    // クリーンアップ関数を定義
+    return () => {
+      // 任意のクリーンアップ処理
+    };
+  }, [auth, navigate]); // authが変更されたときに再実行
 
   // JSXを返す
   return (

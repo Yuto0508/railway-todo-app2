@@ -49,7 +49,6 @@ export const Home = () => {
         })
         .then((res) => {
           setTasks(res.data.tasks);
-          console.log(res.data.tasks);
         })
         .catch((err) => {
           setErrorMessage(`タスクの取得に失敗しました。${err}`);
@@ -68,7 +67,6 @@ export const Home = () => {
       })
       .then((res) => {
         setTasks(res.data.tasks);
-        console.log(res.data.tasks);
       })
       .catch((err) => {
         setErrorMessage(`タスクの取得に失敗しました。${err}`);
@@ -157,7 +155,6 @@ const Tasks = (props) => {
   const { tasks, selectListId, isDoneDisplay } = props;
   if (tasks === null) return <></>;
   const RemainingTime = (limit) => {
-    console.log(limit);
     if (!limit) {
       return '';
     }
