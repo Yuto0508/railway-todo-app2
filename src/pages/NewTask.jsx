@@ -25,7 +25,7 @@ export const NewTask = () => {
   const handleSelectList = (id) => setSelectListId(id);
   const handleDeadlineChange = (e) => {
     const limitDate = new Date(e.target.value);
-    setLimit(limitDate.toISOString().split('.000Z')[0] + 'Z');
+    setLimit(limitDate.toISOString().split('.000Z')[0] + '+09:00');
   };
 
   // タスク作成処理(deadlineをAPIを受け取れるよう正しい形にする)
@@ -75,6 +75,8 @@ export const NewTask = () => {
     }
     const now = new Date();
     const deadlineDate = new Date(limit);
+    deadlineDate.setHours(deadlineDate.getHours() + 9);
+    console.log(deadlineDate);
     const differenceInMilliseconds = deadlineDate - now;
 
     const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));

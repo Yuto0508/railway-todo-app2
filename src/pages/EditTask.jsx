@@ -28,7 +28,7 @@ export const EditTask = () => {
   const handleIsDoneChange = (e) => setIsDone(e.target.value === 'done');
   const handleDeadlineChange = (e) => {
     const limitDate = new Date(e.target.value);
-    setLimit(limitDate.toISOString().split('.000Z')[0] + 'Z');
+    setLimit(limitDate.toISOString().split('.000Z')[0] + '+09:00');
   };
 
   // RemainingTime関数
@@ -38,6 +38,8 @@ export const EditTask = () => {
     }
     const now = new Date();
     const deadlineDate = new Date(limit);
+    deadlineDate.setHours(deadlineDate.getHours() + 9);
+    console.log(deadlineDate);
     const differenceInMilliseconds = deadlineDate - now;
 
     const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
@@ -50,6 +52,7 @@ export const EditTask = () => {
 
     return `${days}日 ${hours}時間 ${minutes}分`;
   };
+
   // タスクの更新処理(deadlineをAPIを受け取る正しい形にする)
   const onUpdateTask = () => {
     const data = {

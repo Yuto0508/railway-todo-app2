@@ -160,6 +160,8 @@ const Tasks = (props) => {
     }
     const now = new Date();
     const deadlineDate = new Date(limit);
+    deadlineDate.setHours(deadlineDate.getHours() + 9);
+    console.log(deadlineDate);
     const differenceInMilliseconds = deadlineDate - now;
 
     const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
@@ -179,22 +181,27 @@ const Tasks = (props) => {
       <ul>
         {tasks
           .filter((task) => task.done === true)
-          .map((task, key) => (
-            <li key={key} className="task-item">
-              <Link
-                to={`/lists/${selectListId}/tasks/${task.id}`}
-                className="task-item-link"
-              >
-                {task.title}
-                <br />
-                {task.done ? '完了' : '未完了'}
-                <br />
-                {`期限: ${task.limit}`}
-                <br />
-                {`残り日時: ${RemainingTime(task.limit)}`}
-              </Link>
-            </li>
-          ))}
+          .map((task, key) => {
+            const deadlineDate = new Date(task.limit);
+            deadlineDate.setHours(deadlineDate.getHours() + 9); // UTCからJSTに変換
+            const formattedDeadline = deadlineDate.toLocaleString('ja-JP'); // ローカルタイムゾーンで表示
+            return (
+              <li key={key} className="task-item">
+                <Link
+                  to={`/lists/${selectListId}/tasks/${task.id}`}
+                  className="task-item-link"
+                >
+                  {task.title}
+                  <br />
+                  {task.done ? '完了' : '未完了'}
+                  <br />
+                  {`期限: ${formattedDeadline(task.limit)}`}
+                  <br />
+                  {`残り日時: ${RemainingTime(task.limit)}`}
+                </Link>
+              </li>
+            );
+          })}
       </ul>
     );
   }
